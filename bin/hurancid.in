@@ -25,7 +25,7 @@
 #
 #  RANCID - Really Awesome New Cisco confIg Differ
 #
-# usage: rancid [-d] [-l] [-f filename | $host]
+# usage: hurancid [-d] [-l] [-f filename | $host]
 #
 use Getopt::Std;
 getopts('dfl');
@@ -43,7 +43,7 @@ my(%filter_pwds);		# password filtering mode
 sub ProcessHistory {
     my($new_hist_tag,$new_command,$command_string,@string)=(@_);
     if((($new_hist_tag ne $hist_tag) || ($new_command ne $command))
-       && defined %history) {
+       && scalar %history) {
 	print eval "$command \%history";
 	undef %history;
     }
