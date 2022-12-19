@@ -139,6 +139,24 @@ sub sortbyipaddr {
     &ipaddrval($a) <=> &ipaddrval($b);
 }
 
+# This routine parses "show version"
+sub ShowVersion {
+    print STDERR "    In ShowVersion: $_" if ($debug);
+
+    while (<INPUT>) {
+        print STDERR "History $_\n";
+        tr/\015//d;
+        last if(/^$prompt/);
+        next if(/^(\s*|\s*$cmd\s*)$/);
+        return(-1) if (/command authorization failed/i);
+
+        next if / uptime is /i;
+        s/^\s*//g;
+
+        ProcessHistory("COMMENTS","keysort","A0", "!$_") && next;
+    }
+    return(0);
+}
 
 # This routine processes a "show configuration"
 sub WriteTerm {
@@ -184,11 +202,13 @@ sub DoNothing {print STDOUT;}
 
 # Main
 %commands=(
+	'display version' => "ShowVersion",
 	'display current-configuration'	=> "WriteTerm"
 );
 # keys() doesnt return things in the order entered and the order of the
 # cmds is important (show version first and write term last). pita
 @commands=(
+	"display version",
 	"display current-configuration"
 );
 $huaw_cmds=join(";",@commands);
